@@ -1,3 +1,4 @@
+// Package http provides utilities on top of the net/http package.
 package http
 
 import (
@@ -11,6 +12,7 @@ import (
 // Option configures an HTTP Server.
 type Option func(*http.Server)
 
+// WithTLSConfig allows overriding the default TLS Config in the call to NewServer.
 func WithTLSConfig(cfg *tls.Config) Option {
 	return func(s *http.Server) {
 		s.TLSConfig = cfg
