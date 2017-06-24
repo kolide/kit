@@ -54,7 +54,7 @@ func WithProfile(p Profile) Option {
 //
 // WithCertificates is useful for creating a TLS Config for servers which require SNI,
 // for example reverse proxies.
-func WithCertificattes(certs []tls.Certificate) Option {
+func WithCertificates(certs []tls.Certificate) Option {
 	return func(config *tls.Config) {
 		config.Certificates = append(config.Certificates, certs...)
 		config.BuildNameToCertificate()
