@@ -1,5 +1,5 @@
-// Package tls provides utilities on top of the standard library TLS package.
-package tls
+// Package tlsutil provides utilities on top of the standard library TLS package.
+package tlsutil
 
 import (
 	"crypto/tls"

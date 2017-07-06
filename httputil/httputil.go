@@ -1,12 +1,12 @@
-// Package http provides utilities on top of the net/http package.
-package http
+// Package httputil provides utilities on top of the net/http package.
+package httputil
 
 import (
 	"crypto/tls"
 	"net/http"
 	"time"
 
-	ktls "github.com/kolide/kit/tls"
+	"github.com/kolide/kit/tlsutil"
 )
 
 // Option configures an HTTP Server.
@@ -37,7 +37,7 @@ func NewServer(addr string, h http.Handler, opts ...Option) *http.Server {
 
 	// set a strict TLS config by default.
 	if srv.TLSConfig == nil {
-		srv.TLSConfig = ktls.NewConfig()
+		srv.TLSConfig = tlsutil.NewConfig()
 	}
 
 	return &srv
