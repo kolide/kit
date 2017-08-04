@@ -4,7 +4,38 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 )
+
+func TestDuration(t *testing.T) {
+	var tests = []struct {
+		value time.Duration
+	}{
+		{value: 1 * time.Second},
+		{value: 1 * time.Minute},
+		{value: 1 * time.Hour},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.value.String(), func(t *testing.T) {
+			key := strings.ToUpper(tt.value.String())
+			if err := os.Setenv(key, tt.value.String()); err != nil {
+				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
+			}
+
+			def := 10 * time.Minute
+			if have, want := Duration(key, def), tt.value; have != want {
+				t.Errorf("have %s, want %s", have, want)
+			}
+		})
+	}
+
+	// test default value
+	def := 10 * time.Minute
+	if have, want := Duration("TEST_DEFAULT", def), def; have != want {
+		t.Errorf("have %s, want %s", have, want)
+	}
+}
 
 func TestString(t *testing.T) {
 	var tests = []struct {
