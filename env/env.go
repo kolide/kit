@@ -14,7 +14,11 @@ Example:
 */
 package env
 
-import "os"
+import (
+	"fmt"
+	"os"
+	"time"
+)
 
 // String returns the environment variable value specified by the key parameter,
 // otherwise returning a default value if set.
@@ -30,6 +34,22 @@ func String(key, def string) string {
 func Bool(key string, def bool) bool {
 	if env := os.Getenv(key); env == "true" || env == "TRUE" || env == "1" {
 		return true
+	}
+	return def
+}
+
+// Duration returns the environment variable value specified by the key parameter,
+// otherwise returning a default value if set.
+// If the time.Duration value cannot be parsed, Duration will exit the program
+// with an error status.
+func Duration(key string, def time.Duration) time.Duration {
+	if env, ok := os.LookupEnv(key); ok {
+		t, err := time.ParseDuration(env)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "env: parse time.Duration from flag: %s\n", err)
+			os.Exit(1)
+		}
+		return t
 	}
 	return def
 }
