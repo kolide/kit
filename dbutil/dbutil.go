@@ -26,7 +26,7 @@ func WithLogger(logger log.Logger) Option {
 type Option func(*dbConfig)
 
 // OpenDB creates a sql.DB connection to the database driver.
-// OpenDB uses an exponential backoff timer when attempting to establish a connection,
+// OpenDB uses a linear backoff timer when attempting to establish a connection,
 // only returning after the connection is successful or the number of attempts exceeds
 // the maxAttempts value(defaults to 15 attempts).
 func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
