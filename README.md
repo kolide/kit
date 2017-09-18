@@ -20,30 +20,30 @@ Run `godoc -http=:6060` and then open `http://localhost:6060/pkg/github.com/koli
 
 ## Git
 
-At Kolide, we use GitHub for source control. 
+At Kolide, we use GitHub for source control.
 
-* Projects live in the [GOPATH](https://github.com/golang/go/wiki/GOPATH) at the original `$GOPATH/src/github.com/kolide/$repo` path. 
+* Projects live in the [GOPATH](https://github.com/golang/go/wiki/GOPATH) at the original `$GOPATH/src/github.com/kolide/$repo` path.
 * `github.com/kolide/$repo` is used as the git origin, with your fork being added as a remote. The workflow for a new feature branch becomes:
 
     ```
     # First you would clone a repo
     git clone git@github.com:kolide/kit.git $GOPATH/src/github.com/kolide/kit
-    
+
     # Add your fork as a git remote
     $username = "groob" # this should be whatever your GitHub username is
     git remote add $username git@github.com:$username/kit.git
-    
+
     # Pull from origin
     git pull origin master --rebase
-    
+
     # Create your feature
     git checkout -b feature-branch
-    
+
     # Push to your fork
     git push -u $username feature-branch
-    
+
     # Open a pull request on GitHub.
-    
+
     # Continue to push to your fork as you iterate
     git add .
     git commit
@@ -76,11 +76,11 @@ It helps keep development and code review by having general consensus on a set o
         // set up test dependencies
     	ctx := context.Background()
     	goodNodeKey, err := svc.EnrollAgent(ctx, "foobarbaz", "host123")
-    
+
         // use require if the test cannot continue if the assertion fails
     	require.Nil(t, err)
     	require.NotEmpty(t, goodNodeKey)
-    
+
         // create a []struct for your test cases
     	var authenticatedHostTests = []struct {
     		nodeKey   string
@@ -99,7 +99,7 @@ It helps keep development and code review by having general consensus on a set o
     			shouldErr: false,
     		},
     	}
-    
+
         // use subtests to run through your test cases.
     	for _, tt := range authenticatedHostTests {
     		t.Run("", func(t *testing.T) {
@@ -112,13 +112,13 @@ It helps keep development and code review by having general consensus on a set o
     			}
     		})
     	}
-    
+
     }
     ```
 
-* Use functional options for optional function parameters. [blog](https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis), [video](https://www.youtube.com/watch?v=24lFtGHWxAQ)  
+* Use functional options for optional function parameters. [blog](https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis), [video](https://www.youtube.com/watch?v=24lFtGHWxAQ)
 
-Example:  
+Example:
 Let's say you have a `Client` struct, which will implement an API client and has a default timeout of 5 seconds. One way to create the Client would be to write a function like:
 ```go
 NewClient(baseurl *url.URL, timeout time.Duration, debugMode bool) *Client
@@ -161,7 +161,7 @@ NewClient(baseurl *url.URL, opts ...Option) *Client {
 }
 ```
 
-* Propagate a context through your API. 
+* Propagate a context through your API.
 The `context` package provides a standard way for managing cancellations and request scoped values in a Go program. When writing server and client code, it is recommended to add `context.Context` as the first argument to your methods.
 For example, if you have a function like:
 
