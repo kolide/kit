@@ -1,3 +1,5 @@
+// Munemo is based off of the ruby library https://github.com/jmettraux/munemo.
+// It provides a deterministic way to generate a string from a number.
 package munemo
 
 import (
