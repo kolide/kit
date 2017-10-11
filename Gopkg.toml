@@ -1,6 +1,6 @@
 [[constraint]]
   name = "github.com/go-kit/kit"
-  revision = "7c0038db5f6361f85f612e4154f61e4f6d6a83b2"
+  version = "0.6.0"
 
 [[constraint]]
   name = "github.com/pkg/errors"

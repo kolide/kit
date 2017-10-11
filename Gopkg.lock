@@ -4,7 +4,8 @@
 [[projects]]
   name = "github.com/go-kit/kit"
   packages = ["log","log/level"]
-  revision = "7c0038db5f6361f85f612e4154f61e4f6d6a83b2"
+  revision = "4dc7be5d2d12881735283bcab7352178e190fc71"
+  version = "v0.6.0"
 
 [[projects]]
   name = "github.com/go-logfmt/logfmt"
@@ -33,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8225a163c9961bc7d82e5d88c4d1dbed3a78cc3fcd0d7a57f68d95e5e4c6b53f"
+  inputs-digest = "e6d08299b25a19c9f7511a8adc4e0d88e64648f621356497c94184d1e19af67c"
   solver-name = "gps-cdcl"
   solver-version = 1
