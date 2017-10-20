@@ -18,7 +18,7 @@ Run `godoc -http=:6060` and then open `http://localhost:6060/pkg/github.com/koli
 
 ## Style Guide
 
-You will also be able to find Kolide's Go style guide at [styleguide.md](./styleguide.md). We write a lot of Go at Kolide and we like talking about how we can all write better, more consistent Go. In our style guide, we've amalgamted the results of numerous internal discussions and agreed upon best appraches.
+You will also be able to find Kolide's Go style guide at [styleguide.md](./styleguide.md). We write a lot of Go at Kolide and we like talking about how we can all write better, more consistent Go. In our style guide, we've amalgamated the results of numerous internal discussions and agreed upon best approaches.
 
 ## Git and Dependency Workflow
 

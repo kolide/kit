@@ -1,4 +1,4 @@
-//Package testutil provides utilities for use in tests.
+// Package testutil provides utilities for use in tests.
 package testutil
 
 import (

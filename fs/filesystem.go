@@ -1,3 +1,4 @@
+// Package fs provides filesystem-related functions.
 package fs
 
 import (
@@ -14,7 +15,7 @@ import (
 const (
 	// DirMode is the default permission used when creating directories
 	DirMode = 0755
-	// DirMode is the default permission used when creating files
+	// FileMode is the default permission used when creating files
 	FileMode = 0644
 )
 
@@ -84,7 +85,7 @@ func CopyFile(src, dest string) error {
 	return os.Chmod(dest, sourceinfo.Mode())
 }
 
-// UntarDownload will untar a source tar.gz archive to the supplied destination
+// UntarBundle will untar a source tar.gz archive to the supplied destination
 func UntarBundle(destination string, source string) error {
 	f, err := os.Open(source)
 	if err != nil {
