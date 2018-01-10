@@ -33,6 +33,11 @@ func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
 	config := &dbConfig{
 		logger: log.NewNopLogger(),
 	}
+
+	for _, opt := range opts {
+		opt(config)
+	}
+
 	db, err := sql.Open(driver, dsn)
 	if err != nil {
 		return nil, errors.Wrapf(err, "opening %s connection, dsn=%s", driver, dsn)
