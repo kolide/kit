@@ -12,13 +12,21 @@ import (
 )
 
 type dbConfig struct {
-	logger log.Logger
+	logger      log.Logger
+	maxAttempts int
 }
 
 // WithLogger configures a logger Option.
 func WithLogger(logger log.Logger) Option {
 	return func(c *dbConfig) {
 		c.logger = logger
+	}
+}
+
+// WithMaxAttempts configures the number of maximum attempts to make
+func WithMaxAttempts(maxAttempts int) Option {
+	return func(c *dbConfig) {
+		c.maxAttempts = maxAttempts
 	}
 }
 
@@ -31,7 +39,8 @@ type Option func(*dbConfig)
 // the maxAttempts value(defaults to 15 attempts).
 func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
 	config := &dbConfig{
-		logger: log.NewNopLogger(),
+		logger:      log.NewNopLogger(),
+		maxAttempts: 15,
 	}
 
 	for _, opt := range opts {
@@ -43,9 +52,8 @@ func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
 		return nil, errors.Wrapf(err, "opening %s connection, dsn=%s", driver, dsn)
 	}
 
-	const maxAttempts = 15
 	var dbError error
-	for attempt := 0; attempt < maxAttempts; attempt++ {
+	for attempt := 0; attempt < config.maxAttempts; attempt++ {
 		dbError = db.Ping()
 		if dbError == nil {
 			// we're connected!
