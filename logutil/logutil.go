@@ -3,6 +3,8 @@ package logutil
 
 import (
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -34,4 +36,43 @@ func SetLevelKey(logger log.Logger, key interface{}) log.Logger {
 		}
 		return logger.Log(keyvals...)
 	})
+}
+
+// NewServerLogger creates a standard logger for Kolide services.
+// The logger will output JSON structured logs with a
+// "severity" field set to either "info" or "debug".
+// The acceptable level can be swapped by sending SIGUSR2 to the process.
+func NewServerLogger(debug bool) log.Logger {
+	base := log.NewJSONLogger(log.NewSyncWriter(os.Stderr))
+	base = log.With(base, "ts", log.DefaultTimestampUTC)
+	base = SetLevelKey(base, "severity")
+	base = level.NewInjector(base, level.InfoValue())
+
+	lev := level.AllowInfo()
+	if debug {
+		lev = level.AllowDebug()
+	}
+
+	base = log.With(base, "caller", log.Caller(6))
+
+	var swapLogger log.SwapLogger
+	swapLogger.Swap(level.NewFilter(base, lev))
+
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, syscall.SIGUSR2)
+	go func() {
+		for {
+			<-sigChan
+			if debug {
+				newLogger := level.NewFilter(base, level.AllowInfo())
+				swapLogger.Swap(newLogger)
+			} else {
+				newLogger := level.NewFilter(base, level.AllowDebug())
+				swapLogger.Swap(newLogger)
+			}
+			level.Info(&swapLogger).Log("msg", "swapping level", "debug", !debug)
+			debug = !debug
+		}
+	}()
+	return &swapLogger
 }
