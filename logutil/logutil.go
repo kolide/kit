@@ -8,6 +8,15 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
+// New will create a base logger with some commonly used / consistent settings
+func New() log.Logger {
+	logger := log.NewJSONLogger(os.Stderr)
+	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	logger = log.With(logger, "caller", log.DefaultCaller)
+
+	return logger
+}
+
 // Fatal logs a error message and exits the process.
 func Fatal(logger log.Logger, args ...interface{}) {
 	level.Info(logger).Log(args...)
