@@ -25,8 +25,9 @@ func FromContext(ctx context.Context) (string, bool) {
 	return uuid, ok
 }
 
-// NewRandom returns a Random (Version 4) UUID string.
-func New() string {
+// NewForRequest returns a Random (Version 4) UUID string.
+// If the UUID fails to generate an empty string will be returned.
+func NewForRequest() string {
 	uuid, err := uuid.NewRandom()
 	if err != nil {
 		return ""
