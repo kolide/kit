@@ -15,6 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Server is the debug server struct. It should be created through StartServer.
 type Server struct {
 	serv      *http.Server
 	addr      string
@@ -23,39 +24,40 @@ type Server struct {
 	prefix    string
 }
 
-type option func(*Server)
+// Option is the functional option type for Server.
+type Option func(*Server)
 
 // WithAddr sets the address to bind to.
-func WithAddr(addr string) option {
+func WithAddr(addr string) Option {
 	return func(s *Server) {
 		s.addr = addr
 	}
 }
 
 // WithAuthToken sets the auth token to use. If it is unset, there is no auth.
-func WithAuthToken(token string) option {
+func WithAuthToken(token string) Option {
 	return func(s *Server) {
 		s.authToken = token
 	}
 }
 
 // WithLogger sets the logger to use.
-func WithLogger(logger log.Logger) option {
+func WithLogger(logger log.Logger) Option {
 	return func(s *Server) {
 		s.logger = logger
 	}
 }
 
 // WithPrefix sets the URL prefix to use.
-func WithPrefix(prefix string) option {
+func WithPrefix(prefix string) Option {
 	return func(s *Server) {
 		s.prefix = prefix
 	}
 }
 
 // StartServer creates and starts a new debug server using the provided
-// functional options.
-func StartServer(opts ...option) (*Server, error) {
+// functional Options.
+func StartServer(opts ...Option) (*Server, error) {
 	s := &Server{
 		addr:      ":63809",
 		authToken: "",
