@@ -40,7 +40,6 @@
   version = "v1.6.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
@@ -50,6 +49,7 @@
     "ptypes/timestamp"
   ]
   revision = "925541529c1fa6821df4e44ce2723319eb2be768"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/google/uuid"
@@ -85,6 +85,20 @@
   version = "v1.2.0"
 
 [[projects]]
+  name = "go.opencensus.io"
+  packages = [
+    "internal",
+    "internal/tagencoding",
+    "stats",
+    "stats/internal",
+    "stats/view",
+    "tag",
+    "trace"
+  ]
+  revision = "c9774183e3e14211cf87f61752279f6b8eb55682"
+  version = "v0.3.0"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/net"
   packages = [
@@ -96,7 +110,7 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
 
 [[projects]]
   branch = "master"
@@ -157,6 +171,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c0e57eb2d741d11155f25eb1d36052a793e52d1c8db160f171a70e255ee25759"
+  inputs-digest = "19627d8fd23b72ac8461125adabcd21d70628ea41486eee8957d0f872999b4b5"
   solver-name = "gps-cdcl"
   solver-version = 1
