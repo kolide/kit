@@ -34,6 +34,7 @@ var (
 	goVersion = "unknown"
 	buildDate = "unknown"
 	buildUser = "unknown"
+	buildID   = "" // intentionally left blank
 	appName   = "unknown"
 )
 
@@ -45,6 +46,7 @@ type Info struct {
 	GoVersion string `json:"go_version"`
 	BuildDate string `json:"build_date"`
 	BuildUser string `json:"build_user"`
+	BuildID   string `json:"build_id,omitempty"`
 }
 
 // Version returns a structure with the current version information.
@@ -56,6 +58,7 @@ func Version() Info {
 		GoVersion: goVersion,
 		BuildDate: buildDate,
 		BuildUser: buildUser,
+		BuildID:   buildID,
 	}
 }
 
@@ -73,6 +76,9 @@ func PrintFull() {
 	fmt.Printf("  revision: \t%s\n", v.Revision)
 	fmt.Printf("  build date: \t%s\n", v.BuildDate)
 	fmt.Printf("  build user: \t%s\n", v.BuildUser)
+	if v.BuildID != "" {
+		fmt.Printf("  build id: \t%s\n", v.BuildID)
+	}
 	fmt.Printf("  go version: \t%s\n", v.GoVersion)
 }
 
