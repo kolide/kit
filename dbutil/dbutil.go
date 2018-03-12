@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 )
 
@@ -69,4 +70,15 @@ func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
 	}
 
 	return db, nil
+}
+
+// dbutil.OpenDBX is similar to dbutil.OpenDB, except it returns a *sqlx.DB from
+// the popular github.com/jmoiron/sqlx package.
+func OpenDBX(driver, dsn string, opts ...Option) (*sqlx.DB, error) {
+	db, err := OpenDB(driver, dsn, opts...)
+	if err != nil {
+		return nil, errors.Wrap(err, "opening database/sql database connection")
+	}
+
+	return sqlx.NewDb(db, driver), nil
 }
