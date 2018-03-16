@@ -77,11 +77,11 @@ func NewServerLogger(debug bool) log.Logger {
 	return &swapLogger
 }
 
-// NewFmtLogger creates a standard logger for Kolide CLI tools.
+// NewCLILogger creates a standard logger for Kolide CLI tools.
 // The logger will output leveled logs with a
 // "severity" field set to either "info" or "debug".
 // The acceptable level can be swapped by sending SIGUSR2 to the process.
-func NewFmtLogger(debug bool) log.Logger {
+func NewCLILogger(debug bool) log.Logger {
 	base := log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	base = log.With(base, "ts", log.DefaultTimestampUTC)
 	base = SetLevelKey(base, "severity")
