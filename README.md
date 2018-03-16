@@ -1,4 +1,4 @@
-# Kolide Kit
+# Kolide Kit [![GoDoc](https://godoc.org/github.com/kolide/kit?status.svg)](https://godoc.org/github.com/kolide/kit)
 
 Kolide Kit is a collection of Go libraries used in projects at Kolide. This repository also includes a few other features which are useful for Go developers:
 
