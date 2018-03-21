@@ -44,6 +44,19 @@ func SetLevelKey(logger log.Logger, key interface{}) log.Logger {
 // The acceptable level can be swapped by sending SIGUSR2 to the process.
 func NewServerLogger(debug bool) log.Logger {
 	base := log.NewJSONLogger(log.NewSyncWriter(os.Stderr))
+	return newLogger(debug, base)
+}
+
+// NewCLILogger creates a standard logger for Kolide CLI tools.
+// The logger will output leveled logs with a
+// "severity" field set to either "info" or "debug".
+// The acceptable level can be swapped by sending SIGUSR2 to the process.
+func NewCLILogger(debug bool) log.Logger {
+	base := log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
+	return newLogger(debug, base)
+}
+
+func newLogger(debug bool, base log.Logger) log.Logger {
 	base = log.With(base, "ts", log.DefaultTimestampUTC)
 	base = SetLevelKey(base, "severity")
 	base = level.NewInjector(base, level.InfoValue())
