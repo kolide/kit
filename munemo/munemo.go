@@ -56,7 +56,7 @@ func (m *munemo) string() string {
 func (m *munemo) calculate(number int) {
 	if number < 0 {
 		m.buffer.Write([]byte(m.negativeSymbol))
-		return
+		number = number * -1
 	}
 
 	modulo := number % len(m.symbols)

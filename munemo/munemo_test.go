@@ -13,8 +13,12 @@ func TestMunemo(t *testing.T) {
 		s string
 	}{
 		{110000, "dibaba"},
+		{-110000, "xadibaba"},
 		{111000, "didaba"},
 		{112674, "dihisho"},
+		{0, "ba"},
+		{725973, "shuposhe"},
+		{-1, "xabi"},
 	}
 
 	for _, tt := range tests {
