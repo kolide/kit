@@ -5,6 +5,9 @@ package munemo
 
 import (
 	"bytes"
+	"fmt"
+
+	"github.com/pkg/errors"
 )
 
 // Munemo is based off of the ruby library https://github.com/jmettraux/munemo.
@@ -15,10 +18,10 @@ func Munemo(id int) string {
 	return m.string()
 }
 
-func UnMunemo(s string) int {
+func UnMunemo(s string) (int, error) {
 	m := newMunemo()
-	m.decode(s)
-	return m.int() * m.sign
+	err := m.decode(s)
+	return m.int(), err
 }
 
 type munemo struct {
@@ -26,7 +29,7 @@ type munemo struct {
 	symbols        []string
 	buffer         *bytes.Buffer
 	number         int
-	symbol_values  map[string]int
+	symbolValues   map[string]int
 	sign           int
 }
 
@@ -55,12 +58,12 @@ func newMunemo() *munemo {
 			"za", "zi", "zu", "ze", "zo",
 		},
 		sign:           1,
-		symbol_values:  make(map[string]int),
+		symbolValues:   make(map[string]int),
 		negativeSymbol: "xa",
 		buffer:         new(bytes.Buffer),
 	}
 	for k, v := range m.symbols {
-		m.symbol_values[v] = k
+		m.symbolValues[v] = k
 	}
 
 	return m
@@ -71,40 +74,38 @@ func (m *munemo) string() string {
 }
 
 func (m *munemo) int() int {
-	return m.number
+	return m.number * m.sign
 }
 
-func (m *munemo) decode(s string) {
-	arr := []byte(s)
-	m.buffer.Write(arr)
-
+func (m *munemo) decode(s string) error {
 	// negative if the first two bytes match the negative symbol
-	if string(arr[0:2]) == m.negativeSymbol {
+	if s[0:2] == m.negativeSymbol {
 		m.sign = -1
-		arr = arr[2:len(arr)]
+		s = s[2:len(s)]
 	}
 
 	// As long as there are characters, parse them
 	// Read the first syllable, interpret, remove.
 	for {
-		if len(arr) == 0 {
+		if s == "" {
 			break
 		}
 
 		// Syllables are 2 or 3 letters. Check to see if the first 2 or 3
 		// characters are in our array of syllables.
-		if val, ok := m.symbol_values[string(arr[0:2])]; ok {
+		if val, ok := m.symbolValues[s[0:2]]; ok {
 			m.number = len(m.symbols)*m.number + val
-			arr = arr[2:len(arr)]
-		} else if val, ok := m.symbol_values[string(arr[0:3])]; ok {
+			s = s[2:len(s)]
+		} else if val, ok := m.symbolValues[s[0:3]]; ok {
 			m.number = len(m.symbols)*m.number + val
-			arr = arr[3:len(arr)]
+			s = s[3:len(s)]
 		} else {
-			// return nil, fmt.Sprintf("unknown syllable %s", string(arr))
-			// FIXME: Needs error handling
-			break
+			m.number = 0
+			return errors.New(fmt.Sprintf("decode failed: unknown syllable %s", s))
 		}
 	}
+	// No errors!
+	return nil
 }
 
 func (m *munemo) calculate(number int) {
