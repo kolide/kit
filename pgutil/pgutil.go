@@ -19,8 +19,13 @@ type ConnectionOptions struct {
 // String implements the Stringer interface so that a pgutil.ConnectionOptions
 // can be converted into a value key/value connection string
 func (c ConnectionOptions) String() string {
-	return fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		c.Host, c.Port, c.User, c.Password, c.DBName, c.SSLMode,
+	s := fmt.Sprintf(
+		"host=%s port=%s dbname=%s sslmode=%s user=%s",
+		c.Host, c.Port, c.DBName, c.SSLMode, c.User,
 	)
+
+	if c.Password != "" {
+		s = fmt.Sprintf("%s password=%s", s, c.Password)
+	}
+	return s
 }
