@@ -76,6 +76,9 @@ func TestBool(t *testing.T) {
 		{env: "true", value: true},
 		{env: "1", value: true},
 		{env: "F", value: false},
+		{env: "FALSE", value: false},
+		{env: "false", value: false},
+		{env: "0", value: false},
 	}
 
 	for _, tt := range tests {
@@ -86,6 +89,10 @@ func TestBool(t *testing.T) {
 			}
 
 			def := false
+			if have, want := Bool(key, def), tt.value; have != want {
+				t.Errorf("have %v, want %v", have, want)
+			}
+			def = true
 			if have, want := Bool(key, def), tt.value; have != want {
 				t.Errorf("have %v, want %v", have, want)
 			}
