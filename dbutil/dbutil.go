@@ -117,12 +117,12 @@ func OpenDBX(driver, dsn string, opts ...Option) (*sqlx.DB, error) {
 
 	driverName := driver
 	if config.wrapWithCensus && !config.alreadyRegisteredDriver {
-		driverName, err := ocsql.Register(driver, config.censusTraceOptions...)
+		d, err := ocsql.Register(driver, config.censusTraceOptions...)
 		if err != nil {
 			return nil, errors.Wrapf(err, "wrapping driver %s with opencensus sql %s", driver, driverName)
 		}
 		opts = append(opts, alreadyRegisteredDriver())
-		driverName = driverName
+		driverName = d
 	}
 
 	db, err := OpenDB(driverName, dsn, opts...)
