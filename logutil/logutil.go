@@ -3,8 +3,6 @@ package logutil
 
 import (
 	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -71,21 +69,6 @@ func newLogger(debug bool, base log.Logger) log.Logger {
 	var swapLogger log.SwapLogger
 	swapLogger.Swap(level.NewFilter(base, lev))
 
-	sigChan := make(chan os.Signal, 1)
-	signal.Notify(sigChan, syscall.SIGUSR2)
-	go func() {
-		for {
-			<-sigChan
-			if debug {
-				newLogger := level.NewFilter(base, level.AllowInfo())
-				swapLogger.Swap(newLogger)
-			} else {
-				newLogger := level.NewFilter(base, level.AllowDebug())
-				swapLogger.Swap(newLogger)
-			}
-			level.Info(&swapLogger).Log("msg", "swapping level", "debug", !debug)
-			debug = !debug
-		}
-	}()
+	go swapLevelHandler(base, &swapLogger, debug)
 	return &swapLogger
 }
