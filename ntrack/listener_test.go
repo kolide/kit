@@ -50,7 +50,7 @@ func TestListener(t *testing.T) {
 			require.NoError(t, err)
 
 			ilis, stats := NewInstrumentedListener(lis)
-			view.Register(stats.views...)
+			registerViewByName(t, tt.viewName, stats, false)
 
 			testClientConnections(t, ilis, tt.disableKeepalive)
 
@@ -63,8 +63,25 @@ func TestListener(t *testing.T) {
 			case *view.LastValueData:
 				assert.Equal(t, float64(tt.expectedValue), data.Value)
 			}
-			view.Unregister(stats.views...)
+			registerViewByName(t, tt.viewName, stats, true)
 		})
+	}
+}
+
+func registerViewByName(t *testing.T, name string, stats *Stats, unregister bool) {
+	var v *view.View
+	switch name {
+	case "ntrack/listener/accepts":
+		v = stats.ListenerAcceptedView
+	case "ntrack/listener/open":
+		v = stats.OpenConnectionsView
+	case "ntrack/listener/closed":
+		v = stats.LifetimeClosedConnectionsView
+	}
+	if unregister {
+		view.Unregister(v)
+	} else {
+		view.Register(v)
 	}
 }
 

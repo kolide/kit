@@ -34,8 +34,7 @@ func (tl *trackingListener) Accept() (net.Conn, error) {
 		return nil, errors.Wrap(err, "accept from base listener")
 	}
 
-	atomic.AddInt64(&tl.stats.openConnections, 1)
-	open := atomic.LoadInt64(&tl.stats.openConnections)
+	open := atomic.AddInt64(&tl.stats.openConnections, 1)
 	stats.Record(context.TODO(), tl.stats.OpenConnections.M(open))
 	return &serverConn{Conn: conn, stats: tl.stats}, nil
 }
@@ -47,8 +46,7 @@ type serverConn struct {
 
 func (sc *serverConn) Close() error {
 	err := sc.Conn.Close()
-	atomic.AddInt64(&sc.stats.openConnections, -1)
-	open := atomic.LoadInt64(&sc.stats.openConnections)
+	open := atomic.AddInt64(&sc.stats.openConnections, -1)
 	stats.Record(context.TODO(),
 		sc.stats.OpenConnections.M(open),
 		sc.stats.LifetimeClosedConnections.M(1),
@@ -64,7 +62,9 @@ type Stats struct {
 
 	TagSuccess tag.Key
 
-	views []*view.View
+	ListenerAcceptedView          *view.View
+	LifetimeClosedConnectionsView *view.View
+	OpenConnectionsView           *view.View
 }
 
 func (s *Stats) init() {
@@ -75,9 +75,10 @@ func (s *Stats) init() {
 	s.TagSuccess, _ = tag.NewKey("success")
 
 	tags := []tag.Key{s.TagSuccess}
-	s.views = append(s.views, viewFromStat(s.ListenerAccepted, tags, view.Count()))
-	s.views = append(s.views, viewFromStat(s.OpenConnections, nil, view.LastValue()))
-	s.views = append(s.views, viewFromStat(s.LifetimeClosedConnections, nil, view.Count()))
+
+	s.ListenerAcceptedView = viewFromStat(s.ListenerAccepted, tags, view.Count())
+	s.OpenConnectionsView = viewFromStat(s.OpenConnections, nil, view.LastValue())
+	s.LifetimeClosedConnectionsView = viewFromStat(s.LifetimeClosedConnections, nil, view.Count())
 }
 
 func viewFromStat(ss *stats.Int64Measure, tags []tag.Key, agg *view.Aggregation) *view.View {
