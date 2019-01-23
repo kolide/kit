@@ -105,3 +105,34 @@ func TestBool(t *testing.T) {
 		t.Errorf("have %v, want %v", have, want)
 	}
 }
+
+func TestInt(t *testing.T) {
+	var tests = []struct {
+		env   string
+		value int
+	}{
+		{env: "1337", value: 1337},
+		{env: "1", value: 1},
+		{env: "-34", value: -34},
+		{env: "0", value: 0},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.env, func(t *testing.T) {
+			key := "TEST_INT"
+			if err := os.Setenv(key, tt.env); err != nil {
+				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
+			}
+
+			if have, want := Int(key, 10), tt.value; have != want {
+				t.Errorf("have %v, want %v", have, want)
+			}
+		})
+	}
+
+	// test default value
+	def := 11
+	if have, want := Int("TEST_DEFAULT", def), def; have != want {
+		t.Errorf("have %v, want %v", have, want)
+	}
+}

@@ -17,6 +17,7 @@ package env
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -29,8 +30,23 @@ func String(key, def string) string {
 	return def
 }
 
-// Bool returns the environment variable value specified by the key parameter,
-// otherwise returning a default value if set.
+// Int returns the environment variable value specified by the key parameter,
+// parsed as an integer. If the environment variable is not set, the default
+// value is returned. If parsing the integer fails, Int will exit the program.
+func Int(key string, def int) int {
+	if env, ok := os.LookupEnv(key); ok {
+		i, err := strconv.Atoi(env)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "env: parse int from flag: %s\n", err)
+			os.Exit(1)
+		}
+		return i
+	}
+	return def
+}
+
+// Bool returns the environment variable value specified by the key parameter
+// (parsed as a boolean), otherwise returning a default value if set.
 func Bool(key string, def bool) bool {
 	env, ok := os.LookupEnv(key)
 	if !ok {
