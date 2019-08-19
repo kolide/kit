@@ -18,6 +18,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.1
 	go.opencensus.io v0.18.0
+	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
 	google.golang.org/appengine v1.3.0 // indirect
 	google.golang.org/grpc v1.14.0
