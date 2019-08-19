@@ -12,12 +12,14 @@ require (
 	github.com/kr/logfmt v0.0.0-20140226030751-b84e30acd515 // indirect
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/mattn/go-sqlite3 v1.10.0 // indirect
+	github.com/oklog/run v1.0.0
 	github.com/oklog/ulid v0.3.0
 	github.com/opencensus-integrations/ocsql v0.1.1
 	github.com/pkg/errors v0.8.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/testify v1.2.1
 	go.opencensus.io v0.18.0
+	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392
 	golang.org/x/sync v0.0.0-20181108010431-42b317875d0f // indirect
 	google.golang.org/appengine v1.3.0 // indirect
 	google.golang.org/grpc v1.14.0
