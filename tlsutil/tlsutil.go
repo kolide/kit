@@ -61,6 +61,15 @@ func WithCertificates(certs []tls.Certificate) Option {
 	}
 }
 
+// WithGetCertificate sets the GetCertificate hook on
+// tls.Config.GetCertificate. It's the usual integration point for
+// autocert.
+func WithGetCertificate(getCertFunc func(*tls.ClientHelloInfo) (*tls.Certificate, error)) Option {
+	return func(config *tls.Config) {
+		config.GetCertificate = getCertFunc
+	}
+}
+
 // NewConfig returns a configured *tls.Config. By default, the TLS Config is set to
 // MinVersion of TLS 1.2 and a Modern Profile.
 //
