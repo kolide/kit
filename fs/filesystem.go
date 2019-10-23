@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/kolide/kit/env"
 	"github.com/pkg/errors"
@@ -85,7 +86,10 @@ func CopyFile(src, dest string) error {
 	return os.Chmod(dest, sourceinfo.Mode())
 }
 
-// UntarBundle will untar a source tar.gz archive to the supplied destination
+// UntarBundle will untar a source tar.gz archive to the supplied
+// destination. Note that this calls `filepath.Dir(destination)`,
+// which has the effect of stripping the last component from
+// destination.
 func UntarBundle(destination string, source string) error {
 	f, err := os.Open(source)
 	if err != nil {
@@ -109,6 +113,10 @@ func UntarBundle(destination string, source string) error {
 			return errors.Wrap(err, "reading tar file")
 		}
 
+		if err := sanitizeExtractPath(filepath.Dir(destination), header.Name); err != nil {
+			return errors.Wrap(err, "checking filename")
+		}
+
 		path := filepath.Join(filepath.Dir(destination), header.Name)
 		info := header.FileInfo()
 		if info.IsDir() {
@@ -126,6 +134,16 @@ func UntarBundle(destination string, source string) error {
 		if _, err := io.Copy(file, tr); err != nil {
 			return errors.Wrapf(err, "copy tar %s to destination %s", header.FileInfo().Name(), path)
 		}
+	}
+	return nil
+}
+
+// sanitizeExtractPath checks that the supplied extraction path is nor
+// vulnerable to zip slip attacks. See https://snyk.io/research/zip-slip-vulnerability
+func sanitizeExtractPath(filePath string, destination string) error {
+	destpath := filepath.Join(destination, filePath)
+	if !strings.HasPrefix(destpath, filepath.Clean(destination)+string(os.PathSeparator)) {
+		return errors.Errorf("%s: illegal file path", filePath)
 	}
 	return nil
 }
