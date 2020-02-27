@@ -1,6 +1,16 @@
-// Munemo is based off of the ruby library https://github.com/jmettraux/munemo.
-// It provides a deterministic way to generate a string from a number.
-// it uses 100 syllables, and chunks numbers appropriately
+// Munemo is a reversible numeric encoding library. It's designed to
+// take id numbers, and present them in more human friendly forms. It
+// does this by using a set of symbols, and doing a base conversion to
+// them. There are a couple of known dialects.
+//
+// Original: This is compatible with the original symbol set. This has
+// the disadvantage of being variable length, and non-sortable.
+//
+// Munemo2: This symbol set was developed as a replacement. All
+// symbols are 2 characters, and it creates sortable strings.
+//
+// It is inspired by the ruby library
+// https://github.com/jmettraux/munemo.
 package munemo
 
 import (
@@ -10,16 +20,59 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Munemo is based off of the ruby library https://github.com/jmettraux/munemo.
-// It provides a deterministic way to generate a string from a number.
-func Munemo(id int) string {
-	m := newMunemo()
+type munemoGenerator struct {
+	dialect dialect
+}
+
+// Option is the functional option type for munemoGenerator
+type Option func(*munemoGenerator)
+
+// WithDialect defines the dialect to be used
+func WithDialect(d dialect) Option {
+	return func(mg *munemoGenerator) {
+		mg.dialect = d
+	}
+}
+
+// New returns a munemo generator for the given dialect.
+func New(opts ...Option) *munemoGenerator {
+	mg := &munemoGenerator{
+		dialect: Munemo2,
+	}
+	for _, opt := range opts {
+		opt(mg)
+	}
+
+	return mg
+}
+
+// String takes an integer and returns the mumemo encoded string
+func (mg *munemoGenerator) String(id int) string {
+	m := newMunemo(mg.dialect)
 	m.calculate(id)
 	return m.string()
 }
 
+// Int takes a string, and returns an integer. In the case of error,
+// an error is returned.
+func (mg *munemoGenerator) Int(s string) (int, error) {
+	m := newMunemo(mg.dialect)
+	err := m.decode(s)
+	return m.int(), err
+}
+
+// Munemo is a legacy interface to munemo encoding. It defaults to the
+// original dialect
+func Munemo(id int) string {
+	m := newMunemo(Original)
+	m.calculate(id)
+	return m.string()
+}
+
+// UnMunemo is a legacy interface to reverse munemo encoding. It
+// defaults to the original dialect.
 func UnMunemo(s string) (int, error) {
-	m := newMunemo()
+	m := newMunemo(Original)
 	err := m.decode(s)
 	return m.int(), err
 }
@@ -33,33 +86,12 @@ type munemo struct {
 	sign           int
 }
 
-func newMunemo() *munemo {
+func newMunemo(d dialect) *munemo {
 	m := &munemo{
-		symbols: []string{
-			"ba", "bi", "bu", "be", "bo",
-			"cha", "chi", "chu", "che", "cho",
-			"da", "di", "du", "de", "do",
-			"fa", "fi", "fu", "fe", "fo",
-			"ga", "gi", "gu", "ge", "go",
-			"ha", "hi", "hu", "he", "ho",
-			"ja", "ji", "ju", "je", "jo",
-			"ka", "ki", "ku", "ke", "ko",
-			"la", "li", "lu", "le", "lo",
-			"ma", "mi", "mu", "me", "mo",
-			"na", "ni", "nu", "ne", "no",
-			"pa", "pi", "pu", "pe", "po",
-			"ra", "ri", "ru", "re", "ro",
-			"sa", "si", "su", "se", "so",
-			"sha", "shi", "shu", "she", "sho",
-			"ta", "ti", "tu", "te", "to",
-			"tsa", "tsi", "tsu", "tse", "tso",
-			"wa", "wi", "wu", "we", "wo",
-			"ya", "yi", "yu", "ye", "yo",
-			"za", "zi", "zu", "ze", "zo",
-		},
+		symbols:        d.symbols,
+		negativeSymbol: d.negativeSymbol,
 		sign:           1,
 		symbolValues:   make(map[string]int),
-		negativeSymbol: "xa",
 		buffer:         new(bytes.Buffer),
 	}
 	for k, v := range m.symbols {
