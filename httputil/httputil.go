@@ -19,6 +19,34 @@ func WithTLSConfig(cfg *tls.Config) Option {
 	}
 }
 
+// WithReadTimeout sets the ReadTimeout option
+func WithReadTimeout(t time.Duration) Option {
+	return func(s *http.Server) {
+		s.ReadTimeout = t
+	}
+}
+
+// WithWriteTimeout sets the WriteTimeout option
+func WithWriteTimeout(t time.Duration) Option {
+	return func(s *http.Server) {
+		s.WriteTimeout = t
+	}
+}
+
+// WithReadHeaderTimeout sets the ReadHeaderTimeout option
+func WithReadHeaderTimeout(t time.Duration) Option {
+	return func(s *http.Server) {
+		s.ReadHeaderTimeout = t
+	}
+}
+
+// WithIdleTimeout sets the IdleTimeout option
+func WithIdleTimeout(t time.Duration) Option {
+	return func(s *http.Server) {
+		s.IdleTimeout = t
+	}
+}
+
 // NewServer creates an HTTP Server with pre-configured timeouts and a secure TLS Config.
 func NewServer(addr string, h http.Handler, opts ...Option) *http.Server {
 	srv := http.Server{
