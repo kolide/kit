@@ -51,7 +51,7 @@ func NewFromURL(rawurl string, opts ...Opts) (ConnectionOptions, error) {
 	var c ConnectionOptions
 	parsed, err := url.Parse(rawurl)
 	if err != nil {
-		return c, err
+		return c, errors.Wrap(err, "url parse")
 	}
 
 	c = ConnectionOptions{
