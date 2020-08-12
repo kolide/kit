@@ -123,7 +123,7 @@ func setProfile(cfg *tls.Config, profile Profile) {
 			tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
 		)
 	case Old:
-		cfg.MinVersion = tls.VersionSSL30
+		cfg.MinVersion = tls.VersionTLS10
 		cfg.CurvePreferences = append(cfg.CurvePreferences,
 			tls.CurveP256,
 			tls.CurveP384,
