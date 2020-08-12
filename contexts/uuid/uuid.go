@@ -1,4 +1,4 @@
-// Package uuid provides helpers for propagating UUIDs accross services.
+// Package uuid provides helpers for propagating UUIDs across services.
 package uuid
 
 import (

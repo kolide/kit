@@ -113,7 +113,7 @@ func (m *munemo) decode(s string) error {
 	// negative if the first two bytes match the negative symbol
 	if s[0:2] == m.negativeSymbol {
 		m.sign = -1
-		s = s[2:len(s)]
+		s = s[2:]
 	}
 
 	// As long as there are characters, parse them
@@ -127,10 +127,10 @@ func (m *munemo) decode(s string) error {
 		// characters are in our array of syllables.
 		if val, ok := m.symbolValues[s[0:2]]; ok {
 			m.number = len(m.symbols)*m.number + val
-			s = s[2:len(s)]
+			s = s[2:]
 		} else if val, ok := m.symbolValues[s[0:3]]; ok {
 			m.number = len(m.symbols)*m.number + val
-			s = s[3:len(s)]
+			s = s[3:]
 		} else {
 			m.number = 0
 			return errors.New(fmt.Sprintf("decode failed: unknown syllable %s", s))
