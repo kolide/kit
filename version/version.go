@@ -24,6 +24,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"runtime"
 )
 
 // These values are private which ensures they can only be set with the build flags.
@@ -31,7 +32,7 @@ var (
 	version   = "unknown"
 	branch    = "unknown"
 	revision  = "unknown"
-	goVersion = "unknown"
+	goVersion = runtime.Version()
 	buildDate = "unknown"
 	buildUser = "unknown"
 	appName   = "unknown"
