@@ -2,7 +2,7 @@ version: 2
 jobs:
   build-go1.11:
     docker:
-        - image: golang:1.11
+        - image: golang:1.16
     working_directory: /go/src/github.com/kolide/kit
     steps: &steps
       - checkout
