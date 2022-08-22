@@ -1,4 +1,4 @@
-package fs
+package fsutil
 
 import (
 	"testing"

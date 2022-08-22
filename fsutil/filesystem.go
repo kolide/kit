@@ -1,5 +1,5 @@
-// Package fs provides filesystem-related functions.
-package fs
+// Package fsutil provides filesystem-related functions.
+package fsutil
 
 import (
 	"archive/tar"
