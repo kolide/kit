@@ -34,7 +34,7 @@ func genCopyToDiskFunc(srcFS fs.FS, destDir string) fs.WalkDirFunc {
 
 		// If it's a directory, make it under destdir
 		if d.IsDir() {
-			if err := os.MkdirAll(fullpath, 0755); err != nil {
+			if err := os.MkdirAll(fullpath, fileinfo.Mode()); err != nil {
 				return fmt.Errorf("making directory %s: %w", fullpath, err)
 			}
 			return nil
