@@ -19,9 +19,9 @@ func TestCopyFSToDisk(t *testing.T) {
 	subdir, err := fs.Sub(embeddedSourceData, "test-data/fscopy")
 	require.NoError(t, err)
 
-	destDir := t.TempDir()
+	destDir := "/tmp/fstest" // t.TempDir()
 
-	require.NoError(t, CopyFSToDisk(subdir, destDir))
+	require.NoError(t, CopyFSToDisk(subdir, destDir, CommonFileMode))
 
 	var tests = []struct {
 		path string
