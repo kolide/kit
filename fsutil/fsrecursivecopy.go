@@ -7,7 +7,7 @@ import (
 	"path"
 )
 
-// CopyToDisk copies an embedded FS to a given directory. Because go's embed does not preserve the file mode, you must
+// CopyFSToDisk copies an embedded FS to a given directory. Because go's embed does not preserve the file mode, you must
 // also pass a function that will return the desired file mode for each file.
 func CopyFSToDisk(src fs.FS, destDir string, modeSetter func(fs.FileInfo) os.FileMode) error {
 	if err := fs.WalkDir(src, ".", genCopyToDiskFunc(src, destDir, modeSetter)); err != nil {
