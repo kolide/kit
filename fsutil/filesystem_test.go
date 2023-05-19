@@ -7,6 +7,8 @@ import (
 )
 
 func TestSanitizeExtractPath(t *testing.T) {
+	t.Parallel()
+
 	var tests = []struct {
 		filepath    string
 		destination string

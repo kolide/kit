@@ -12,6 +12,8 @@ import (
 )
 
 func TestCheckHealth(t *testing.T) {
+	t.Parallel()
+
 	checkers := map[string]Checker{
 		"fail": fail{},
 		"pass": Nop(),
@@ -34,6 +36,8 @@ func (c fail) HealthCheck() error {
 }
 
 func TestHealthzHandler(t *testing.T) {
+	t.Parallel()
+
 	logger := log.NewNopLogger()
 	failing := Handler(logger, map[string]Checker{
 		"mock": healthcheckFunc(func() error {
@@ -53,7 +57,10 @@ func TestHealthzHandler(t *testing.T) {
 		{500, failing},
 	}
 	for _, tt := range httpTests {
+		tt := tt
 		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
 			rr := httptest.NewRecorder()
 			req := httptest.NewRequest("GET", "/healthz", nil)
 			tt.handler.ServeHTTP(rr, req)

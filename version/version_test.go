@@ -6,6 +6,8 @@ import (
 )
 
 func TestVersion(t *testing.T) {
+	t.Parallel()
+
 	now := time.Now().String()
 	version = "test"
 	buildDate = now

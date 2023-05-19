@@ -36,7 +36,10 @@ func TestConversion(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
 			c, err := NewFromURL(tt.in, tt.opts...)
 			if tt.err {
 				require.Error(t, err)

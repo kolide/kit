@@ -1,8 +1,10 @@
 /*
-	Package entrypoint replaces the shell version of
-		exec $@
-	which is often use when creating docker entrypoint scripts to wrap a
-	binary with some initial setup.
+Package entrypoint replaces the shell version of
+
+	exec $@
+
+which is often use when creating docker entrypoint scripts to wrap a
+binary with some initial setup.
 */
 package entrypoint
 

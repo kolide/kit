@@ -67,16 +67,21 @@ func TestMunemoOriginal(t *testing.T) {
 
 func testMunemo(t *testing.T, mg *munemoGenerator, tests []testCase) {
 	for _, tt := range tests {
+		tt := tt
 		if tt.e == "" {
 			// If we lack an error, this is a legit conversion. Try both ways
 			if !tt.skipInt {
 				t.Run(fmt.Sprintf("string/%d", tt.i), func(t *testing.T) {
+					t.Parallel()
+
 					ret := mg.String(tt.i)
 					require.Equal(t, tt.s, ret)
 				})
 			}
 
 			t.Run(fmt.Sprintf("int/%s", tt.s), func(t *testing.T) {
+				t.Parallel()
+
 				ret, err := mg.Int(tt.s)
 				assert.Equal(t, tt.i, ret)
 				assert.NoError(t, err)
@@ -84,6 +89,8 @@ func testMunemo(t *testing.T, mg *munemoGenerator, tests []testCase) {
 		} else {
 			// Having an error, means we're looking for an error
 			t.Run(fmt.Sprintf("interr/%s", tt.s), func(t *testing.T) {
+				t.Parallel()
+
 				ret, err := mg.Int(tt.s)
 				require.Equal(t, tt.i, ret)
 				require.EqualError(t, err, tt.e)
@@ -98,16 +105,21 @@ func TestLegacyInterfaces(t *testing.T) {
 	t.Parallel()
 
 	for _, tt := range originalTests {
+		tt := tt
 		if tt.e == "" {
 			// If we lack an error, this is a legit conversion. Try both ways
 			if !tt.skipInt {
 				t.Run(fmt.Sprintf("Munemo/%d", tt.i), func(t *testing.T) {
+					t.Parallel()
+
 					ret := Munemo(tt.i)
 					require.Equal(t, tt.s, ret)
 				})
 			}
 
 			t.Run(fmt.Sprintf("UnMunemo/%s", tt.s), func(t *testing.T) {
+				t.Parallel()
+
 				ret, err := UnMunemo(tt.s)
 				assert.Equal(t, tt.i, ret)
 				assert.NoError(t, err)
@@ -115,6 +127,8 @@ func TestLegacyInterfaces(t *testing.T) {
 		} else {
 			// Having an error, means we're looking for an error
 			t.Run(fmt.Sprintf("UnMunemo/%s", tt.s), func(t *testing.T) {
+				t.Parallel()
+
 				ret, err := UnMunemo(tt.s)
 				require.Equal(t, tt.i, ret)
 				require.EqualError(t, err, tt.e)

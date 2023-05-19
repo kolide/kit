@@ -16,9 +16,11 @@ func ExampleChain() {
 	srv := httptest.NewServer(h)
 	defer srv.Close()
 
-	if _, err := http.Get(srv.URL); err != nil {
+	resp, err := http.Get(srv.URL)
+	if err != nil {
 		panic(err)
 	}
+	defer resp.Body.Close()
 
 	// Output:
 	// annotate:  one
