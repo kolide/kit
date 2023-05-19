@@ -7,6 +7,8 @@ import (
 )
 
 func TestErrorAfterSuccess(t *testing.T) {
+	t.Parallel()
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
@@ -18,6 +20,8 @@ func TestErrorAfterSuccess(t *testing.T) {
 }
 
 func TestErrorAfterError(t *testing.T) {
+	t.Parallel()
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
@@ -30,6 +34,8 @@ func TestErrorAfterError(t *testing.T) {
 }
 
 func TestErrorAfterFuncSuccess(t *testing.T) {
+	t.Parallel()
+
 	err := ErrorAfterFunc(100*time.Millisecond, func() {
 		time.Sleep(1 * time.Millisecond)
 	})
@@ -39,6 +45,8 @@ func TestErrorAfterFuncSuccess(t *testing.T) {
 }
 
 func TestErrorAfterFuncError(t *testing.T) {
+	t.Parallel()
+
 	err := ErrorAfterFunc(1*time.Millisecond, func() {
 		time.Sleep(100 * time.Millisecond)
 	})
@@ -69,6 +77,8 @@ func (m *mockFatal) Fatalf(string, ...interface{}) {
 }
 
 func TestFatalAfterFuncSuccess(t *testing.T) {
+	t.Parallel()
+
 	var m mockFatal
 
 	// Should not fatal
@@ -84,6 +94,8 @@ func TestFatalAfterFuncSuccess(t *testing.T) {
 }
 
 func TestFatalAfterFuncFatal(t *testing.T) {
+	t.Parallel()
+
 	var m mockFatal
 
 	// Should fatal
@@ -115,6 +127,8 @@ func ExampleFatalAfterFunc_fatal() {
 }
 
 func TestFatalAfterSuccess(t *testing.T) {
+	t.Parallel()
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {
@@ -132,6 +146,8 @@ func TestFatalAfterSuccess(t *testing.T) {
 }
 
 func TestFatalAfterFatal(t *testing.T) {
+	t.Parallel()
+
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func TestDuration(t *testing.T) {
+func TestDuration(t *testing.T) { //nolint:paralleltest
 	var tests = []struct {
 		value time.Duration
 	}{
@@ -16,7 +16,7 @@ func TestDuration(t *testing.T) {
 		{value: 1 * time.Hour},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.value.String(), func(t *testing.T) {
 			key := strings.ToUpper(tt.value.String())
 			if err := os.Setenv(key, tt.value.String()); err != nil {
@@ -37,7 +37,7 @@ func TestDuration(t *testing.T) {
 	}
 }
 
-func TestString(t *testing.T) {
+func TestString(t *testing.T) { //nolint:paralleltest
 	var tests = []struct {
 		value string
 	}{
@@ -46,7 +46,7 @@ func TestString(t *testing.T) {
 		{value: "baz"},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.value, func(t *testing.T) {
 			key := strings.ToUpper(tt.value)
 			if err := os.Setenv(key, tt.value); err != nil {
@@ -67,7 +67,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestBool(t *testing.T) {
+func TestBool(t *testing.T) { //nolint:paralleltest
 	var tests = []struct {
 		env   string
 		value bool
@@ -81,7 +81,7 @@ func TestBool(t *testing.T) {
 		{env: "0", value: false},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.env, func(t *testing.T) {
 			key := "TEST_BOOL"
 			if err := os.Setenv(key, tt.env); err != nil {
@@ -106,7 +106,7 @@ func TestBool(t *testing.T) {
 	}
 }
 
-func TestInt(t *testing.T) {
+func TestInt(t *testing.T) { //nolint:paralleltest
 	var tests = []struct {
 		env   string
 		value int
@@ -117,7 +117,7 @@ func TestInt(t *testing.T) {
 		{env: "0", value: 0},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.env, func(t *testing.T) {
 			key := "TEST_INT"
 			if err := os.Setenv(key, tt.env); err != nil {

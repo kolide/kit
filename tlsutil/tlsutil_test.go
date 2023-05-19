@@ -6,6 +6,8 @@ import (
 )
 
 func TestNewConfig(t *testing.T) {
+	t.Parallel()
+
 	// default, should have Modern compatibility.
 	cfg := NewConfig()
 	if have, want := cfg.MinVersion, uint16(tls.VersionTLS12); have != want {
