@@ -43,6 +43,8 @@ type Info struct {
 	Version   string `json:"version"`
 	Branch    string `json:"branch"`
 	Revision  string `json:"revision"`
+	GoArch    string `json:"go_arch"`
+	GoOs      string `json:"go_os"`
 	GoVersion string `json:"go_version"`
 	BuildDate string `json:"build_date"`
 	BuildUser string `json:"build_user"`
@@ -54,7 +56,9 @@ func Version() Info {
 		Version:   version,
 		Branch:    branch,
 		Revision:  revision,
-		GoVersion: goVersion,
+		GoArch:    runtime.GOARCH,
+		GoOs:      runtime.GOOS,
+		GoVersion: runtime.Version(),
 		BuildDate: buildDate,
 		BuildUser: buildUser,
 	}
@@ -74,6 +78,8 @@ func PrintFull() {
 	fmt.Printf("  revision: \t%s\n", v.Revision)
 	fmt.Printf("  build date: \t%s\n", v.BuildDate)
 	fmt.Printf("  build user: \t%s\n", v.BuildUser)
+	fmt.Printf("  go arch: \t%s\n", v.GoArch)
+	fmt.Printf("  go os: \t%s\n", v.GoOs)
 	fmt.Printf("  go version: \t%s\n", v.GoVersion)
 }
 
