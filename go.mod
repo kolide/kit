@@ -1,6 +1,6 @@
 module github.com/kolide/kit
 
-go 1.19
+go 1.20
 
 require (
 	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc
@@ -30,5 +30,5 @@ require (
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 )
