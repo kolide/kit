@@ -4,7 +4,9 @@ package fsutil
 import (
 	"archive/tar"
 	"compress/gzip"
+	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -117,24 +119,32 @@ func UntarBundle(destination string, source string) error {
 			return errors.Wrap(err, "checking filename")
 		}
 
-		path := filepath.Join(filepath.Dir(destination), header.Name)
+		destPath := filepath.Join(filepath.Dir(destination), header.Name)
 		info := header.FileInfo()
 		if info.IsDir() {
-			if err = os.MkdirAll(path, info.Mode()); err != nil {
-				return errors.Wrapf(err, "creating directory for tar file: %s", path)
+			if err = os.MkdirAll(destPath, info.Mode()); err != nil {
+				return errors.Wrapf(err, "creating directory for tar file: %s", destPath)
 			}
 			continue
 		}
 
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, info.Mode())
-		if err != nil {
-			return errors.Wrapf(err, "open file %s", path)
-		}
-		defer file.Close()
-		if _, err := io.Copy(file, tr); err != nil {
-			return errors.Wrapf(err, "copy tar %s to destination %s", header.FileInfo().Name(), path)
+		if err := writeBundleFile(destPath, info.Mode(), tr); err != nil {
+			return fmt.Errorf("writing file: %w", err)
 		}
 	}
+	return nil
+}
+
+func writeBundleFile(destPath string, perm fs.FileMode, srcReader io.Reader) error {
+	file, err := os.OpenFile(destPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, perm)
+	if err != nil {
+		return fmt.Errorf("opening %s: %w", destPath, err)
+	}
+	defer file.Close()
+	if _, err := io.Copy(file, srcReader); err != nil {
+		return fmt.Errorf("copying to %s: %w", destPath, err)
+	}
+
 	return nil
 }
 
