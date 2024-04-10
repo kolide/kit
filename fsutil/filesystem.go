@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/kolide/kit/env"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -95,13 +94,13 @@ func CopyFile(src, dest string) error {
 func UntarBundle(destination string, source string) error {
 	f, err := os.Open(source)
 	if err != nil {
-		return errors.Wrap(err, "open download source")
+		return fmt.Errorf("opening source: %w", err)
 	}
 	defer f.Close()
 
 	gzr, err := gzip.NewReader(f)
 	if err != nil {
-		return errors.Wrapf(err, "create gzip reader from %s", source)
+		return fmt.Errorf("creating gzip reader from %s: %w", source, err)
 	}
 	defer gzr.Close()
 
@@ -112,18 +111,18 @@ func UntarBundle(destination string, source string) error {
 			break
 		}
 		if err != nil {
-			return errors.Wrap(err, "reading tar file")
+			return fmt.Errorf("reading tar file: %w", err)
 		}
 
 		if err := sanitizeExtractPath(filepath.Dir(destination), header.Name); err != nil {
-			return errors.Wrap(err, "checking filename")
+			return fmt.Errorf("checking filename: %w", err)
 		}
 
 		destPath := filepath.Join(filepath.Dir(destination), header.Name)
 		info := header.FileInfo()
 		if info.IsDir() {
 			if err = os.MkdirAll(destPath, info.Mode()); err != nil {
-				return errors.Wrapf(err, "creating directory for tar file: %s", destPath)
+				return fmt.Errorf("creating directory %s for tar file: %w", destPath, err)
 			}
 			continue
 		}
@@ -153,7 +152,7 @@ func writeBundleFile(destPath string, perm fs.FileMode, srcReader io.Reader) err
 func sanitizeExtractPath(filePath string, destination string) error {
 	destpath := filepath.Join(destination, filePath)
 	if !strings.HasPrefix(destpath, filepath.Clean(destination)+string(os.PathSeparator)) {
-		return errors.Errorf("%s: illegal file path", filePath)
+		return fmt.Errorf("%s: illegal file path", filePath)
 	}
 	return nil
 }
