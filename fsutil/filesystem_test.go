@@ -20,11 +20,13 @@ func TestUntarBundle(t *testing.T) {
 	// Create tarball contents
 	originalDir := t.TempDir()
 	topLevelFile := filepath.Join(originalDir, "testfile.txt")
-	require.NoError(t, os.WriteFile(topLevelFile, []byte("test1"), 0655))
+	var topLevelFileMode fs.FileMode = 0655
+	require.NoError(t, os.WriteFile(topLevelFile, []byte("test1"), topLevelFileMode))
 	internalDir := filepath.Join(originalDir, "some", "path", "to")
-	require.NoError(t, os.MkdirAll(internalDir, 0755))
+	var nestedFileMode fs.FileMode = 0755
+	require.NoError(t, os.MkdirAll(internalDir, nestedFileMode))
 	nestedFile := filepath.Join(internalDir, "anotherfile.txt")
-	require.NoError(t, os.WriteFile(nestedFile, []byte("test2"), 0755))
+	require.NoError(t, os.WriteFile(nestedFile, []byte("test2"), nestedFileMode))
 
 	// Create test tarball
 	tarballDir := t.TempDir()
@@ -36,8 +38,18 @@ func TestUntarBundle(t *testing.T) {
 	require.NoError(t, UntarBundle(filepath.Join(newDir, "anything"), tarballFile))
 
 	// Confirm the tarball has the contents we expect
-	require.FileExists(t, filepath.Join(newDir, filepath.Base(topLevelFile)))
-	require.FileExists(t, filepath.Join(newDir, "some", "path", "to", filepath.Base(nestedFile)))
+	newTopLevelFile := filepath.Join(newDir, filepath.Base(topLevelFile))
+	require.FileExists(t, newTopLevelFile)
+	newNestedFile := filepath.Join(newDir, "some", "path", "to", filepath.Base(nestedFile))
+	require.FileExists(t, newNestedFile)
+
+	// Confirm each file retained its original permissions
+	topLevelFileInfo, err := os.Stat(newTopLevelFile)
+	require.NoError(t, err)
+	require.Equal(t, topLevelFileMode, topLevelFileInfo.Mode())
+	nestedFileInfo, err := os.Stat(newNestedFile)
+	require.NoError(t, err)
+	require.Equal(t, nestedFileMode, nestedFileInfo.Mode())
 }
 
 func TestUntarBundleWithRequiredFilePermission(t *testing.T) {
@@ -48,7 +60,7 @@ func TestUntarBundleWithRequiredFilePermission(t *testing.T) {
 	topLevelFile := filepath.Join(originalDir, "testfile.txt")
 	require.NoError(t, os.WriteFile(topLevelFile, []byte("test1"), 0655))
 	internalDir := filepath.Join(originalDir, "some", "path", "to")
-	require.NoError(t, os.MkdirAll(internalDir, 0755))
+	require.NoError(t, os.MkdirAll(internalDir, 0744))
 	nestedFile := filepath.Join(internalDir, "anotherfile.txt")
 	require.NoError(t, os.WriteFile(nestedFile, []byte("test2"), 0744))
 
