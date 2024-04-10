@@ -134,6 +134,51 @@ func UntarBundle(destination string, source string) error {
 	return nil
 }
 
+// UntarBundleWithRequiredFilePermission performs the same operation as UntarBundle,
+// but enforces `requiredFilePerm` for all files in the bundle.
+func UntarBundleWithRequiredFilePermission(destination string, source string, requiredFilePerm fs.FileMode) error {
+	f, err := os.Open(source)
+	if err != nil {
+		return fmt.Errorf("opening source: %w", err)
+	}
+	defer f.Close()
+
+	gzr, err := gzip.NewReader(f)
+	if err != nil {
+		return fmt.Errorf("creating gzip reader from %s: %w", source, err)
+	}
+	defer gzr.Close()
+
+	tr := tar.NewReader(gzr)
+	for {
+		header, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("reading tar file: %w", err)
+		}
+
+		if err := sanitizeExtractPath(filepath.Dir(destination), header.Name); err != nil {
+			return fmt.Errorf("checking filename: %w", err)
+		}
+
+		destPath := filepath.Join(filepath.Dir(destination), header.Name)
+		info := header.FileInfo()
+		if info.IsDir() {
+			if err = os.MkdirAll(destPath, info.Mode()); err != nil {
+				return fmt.Errorf("creating directory %s for tar file: %w", destPath, err)
+			}
+			continue
+		}
+
+		if err := writeBundleFile(destPath, requiredFilePerm, tr); err != nil {
+			return fmt.Errorf("writing file: %w", err)
+		}
+	}
+	return nil
+}
+
 func writeBundleFile(destPath string, perm fs.FileMode, srcReader io.Reader) error {
 	file, err := os.OpenFile(destPath, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, perm)
 	if err != nil {
