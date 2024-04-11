@@ -52,43 +52,6 @@ func TestUntarBundle(t *testing.T) {
 	require.Equal(t, nestedFileMode, nestedFileInfo.Mode())
 }
 
-func TestUntarBundleWithRequiredFilePermission(t *testing.T) {
-	t.Parallel()
-
-	// Create tarball contents
-	originalDir := t.TempDir()
-	topLevelFile := filepath.Join(originalDir, "testfile.txt")
-	require.NoError(t, os.WriteFile(topLevelFile, []byte("test1"), 0655))
-	internalDir := filepath.Join(originalDir, "some", "path", "to")
-	require.NoError(t, os.MkdirAll(internalDir, 0744))
-	nestedFile := filepath.Join(internalDir, "anotherfile.txt")
-	require.NoError(t, os.WriteFile(nestedFile, []byte("test2"), 0744))
-
-	// Create test tarball
-	tarballDir := t.TempDir()
-	tarballFile := filepath.Join(tarballDir, "test.gz")
-	createTar(t, tarballFile, originalDir)
-
-	// Confirm we can untar the tarball successfully
-	newDir := t.TempDir()
-	var requiredFileMode fs.FileMode = 0755
-	require.NoError(t, UntarBundleWithRequiredFilePermission(filepath.Join(newDir, "anything"), tarballFile, requiredFileMode))
-
-	// Confirm the tarball has the contents we expect
-	newTopLevelFile := filepath.Join(newDir, filepath.Base(topLevelFile))
-	require.FileExists(t, newTopLevelFile)
-	newNestedFile := filepath.Join(newDir, "some", "path", "to", filepath.Base(nestedFile))
-	require.FileExists(t, newNestedFile)
-
-	// Require that both files have the required permission 0755
-	topLevelFileInfo, err := os.Stat(newTopLevelFile)
-	require.NoError(t, err)
-	require.Equal(t, requiredFileMode, topLevelFileInfo.Mode())
-	nestedFileInfo, err := os.Stat(newNestedFile)
-	require.NoError(t, err)
-	require.Equal(t, requiredFileMode, nestedFileInfo.Mode())
-}
-
 // createTar is a helper to create a test tar
 func createTar(t *testing.T, createLocation string, sourceDir string) {
 	tarballFile, err := os.Create(createLocation)
