@@ -30,7 +30,7 @@ jobs:
       # Run again as a workaround for https://github.com/golangci/golangci-lint-action/issues/362
       - name: golangci-lint
         if: ${{ always() }}
-        run: golangci-lint run
+        run: golangci-lint run -d 
   
   govulncheck:
     strategy:
