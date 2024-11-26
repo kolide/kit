@@ -41,8 +41,16 @@ func Test_VersionNum(t *testing.T) {
 			semver:             "",
 			expectedVersionNum: 0,
 		},
+		"unset version": {
+			semver:             "unknown",
+			expectedVersionNum: 0,
+		},
 		"basic version": {
 			semver:             "1.2.3",
+			expectedVersionNum: 1002003,
+		},
+		"4_part_version": {
+			semver:             "1.2.3.4",
 			expectedVersionNum: 1002003,
 		},
 		"max version": {

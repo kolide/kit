@@ -103,15 +103,17 @@ const (
 	patchVersionMultiplier int = 1
 )
 
-// VersionNum parses the semver version string to look for only the major.minor.patch portion,
+// VersionNumFromSemver parses the semver version string to look for only the major.minor.patch portion,
 // splits that into 3 parts (disregarding any extra portions), and applies a multiplier to each
 // part to generate a total int value representing the semver.
 // note that this will generate a sortable, and reversible integer as long as all parts remain less than 1000
 // This is currently intended for use in generating comparable versions to set within windows registry entries,
 // allowing for an easy "upgrade-only" detection configuration within intune.
-// Zero is returned for any case where the version cannot be reliably translated
-func VersionNum() int {
-	semverMatch := semverRegexp.FindStringSubmatch(version)
+// Zero is returned for any case where the version cannot be reliably translated.
+// VersionNumFromSemver should be used where the build time version value cannot be controlled- to restrict
+// translations to the internally set version, use VersionNum
+func VersionNumFromSemver(semver string) int {
+	semverMatch := semverRegexp.FindStringSubmatch(semver)
 	// expect the leftmost match as semverMatch[0] and the semver substring as semverMatch[1]
 	if semverMatch == nil || len(semverMatch) != 2 {
 		return 0
@@ -140,6 +142,13 @@ func VersionNum() int {
 	}
 
 	return versionNum
+}
+
+// VersionNum returns an integer representing the version value set at build time.
+// see VersionNumFromSemver for additional details regarding the general translation process
+// and limitations. this will return 0 if version is unset/unknown
+func VersionNum() int {
+	return VersionNumFromSemver(version)
 }
 
 // SemverFromVersionNum provides the inverse functionality of VersionNum, allowing us
