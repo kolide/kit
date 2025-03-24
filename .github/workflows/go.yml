@@ -1,0 +1,75 @@
+name: ci
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    tags: '*'
+  pull_request:
+    branches: '**'
+  merge_group:
+    types: [checks_requested]
+
+
+jobs:
+  go_test:
+    name: go test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+    - name: Check out code
+      id: checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: './go.mod'
+        check-latest: true
+        cache: false
+
+    - id: go-cache-paths
+      shell: bash
+      run: |
+        echo "go-build=$(go env GOCACHE)" >> "$GITHUB_OUTPUT"
+        echo "go-mod=$(go env GOMODCACHE)" >> "$GITHUB_OUTPUT"
+
+    - name: cache restore - GOCACHE
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ steps.go-cache-paths.outputs.go-build }}
+        key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+        enableCrossOsArchive: true
+
+    - name: cache restore - GOMODCACHE
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ steps.go-cache-paths.outputs.go-mod }}
+        key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+        enableCrossOsArchive: true
+
+    - name: Go Test
+      shell: bash
+      run: go test -cover -coverprofile=coverage.out ./...
+
+    - name: Upload coverage
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ runner.os }}-coverage.out
+        path: ./coverage.out
+        if-no-files-found: error
+
+  ci_mergeable:
+    runs-on: ubuntu-latest
+    steps:
+      - run: true
+    needs:
+      - go_test
