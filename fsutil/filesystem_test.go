@@ -43,10 +43,10 @@ func TestUntarBundle(t *testing.T) {
 	// Confirm each file retained its original permissions
 	topLevelFileInfo, err := os.Stat(newTopLevelFile)
 	require.NoError(t, err)
-	require.Equal(t, topLevelFileMode, topLevelFileInfo.Mode())
+	require.Equal(t, topLevelFileMode.String(), topLevelFileInfo.Mode().String())
 	nestedFileInfo, err := os.Stat(newNestedFile)
 	require.NoError(t, err)
-	require.Equal(t, nestedFileMode, nestedFileInfo.Mode())
+	require.Equal(t, nestedFileMode.String(), nestedFileInfo.Mode().String())
 }
 
 // createTar is a helper to create a test tar
