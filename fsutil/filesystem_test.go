@@ -78,7 +78,7 @@ func createTar(t *testing.T, createLocation string, sourceDir string) {
 		if err != nil {
 			return fmt.Errorf("error creating tar header: %w", err)
 		}
-		hdr.Name = strings.TrimPrefix(path, sourceDir+"/")
+		hdr.Name = strings.TrimPrefix(path, sourceDir+string(os.PathSeparator))
 
 		if err := tw.WriteHeader(hdr); err != nil {
 			return fmt.Errorf("error writing tar header: %w", err)
