@@ -148,6 +148,8 @@ func VersionNumFromSemver(semver string) int {
 // see VersionNumFromSemver for additional details regarding the general translation process
 // and limitations. this will return 0 if version is unset/unknown
 func VersionNum() int {
+	// NOTE: This is not tested directly, the usage of a package var is inherently racey.
+	// Instead, tests run on `VersionNumFromSemver` So don't go changing this, ya hear?
 	return VersionNumFromSemver(version)
 }
 
@@ -161,7 +163,7 @@ func SemverFromVersionNum(versionNum int) string {
 	major := versionNum / majorVersionMultiplier
 	remaining := versionNum - (major * majorVersionMultiplier)
 	minor := remaining / minorVersionMultiplier
-	remaining = remaining - (minor * minorVersionMultiplier)
+	remaining -= (minor * minorVersionMultiplier)
 	// not strictly needed because patchVersionMultiplier is 1 but here because it feels correct
 	patch := remaining * patchVersionMultiplier
 

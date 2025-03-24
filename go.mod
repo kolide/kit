@@ -1,7 +1,8 @@
 module github.com/kolide/kit
 
-go 1.21
-toolchain go1.23.7
+go 1.23.0
+
+toolchain go1.24.0
 
 require (
 	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc

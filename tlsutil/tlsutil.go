@@ -57,7 +57,6 @@ func WithProfile(p Profile) Option {
 func WithCertificates(certs []tls.Certificate) Option {
 	return func(config *tls.Config) {
 		config.Certificates = append(config.Certificates, certs...)
-		config.BuildNameToCertificate()
 	}
 }
 

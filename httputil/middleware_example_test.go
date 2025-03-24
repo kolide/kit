@@ -16,7 +16,7 @@ func ExampleChain() {
 	srv := httptest.NewServer(h)
 	defer srv.Close()
 
-	resp, err := http.Get(srv.URL)
+	resp, err := http.Get(srv.URL) // nolint:noctx
 	if err != nil {
 		panic(err)
 	}
