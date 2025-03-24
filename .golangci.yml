@@ -4,32 +4,92 @@ run:
 linters:
   enable:
     - bodyclose
-    - unused
+    - containedctx
     - gofmt
     - govet
+    - ineffassign
     - misspell
-    - nakedret
+    - noctx
+    - perfsprint
+    - rowserrcheck
+    - sloglint
+    - sqlclosecheck
+    - staticcheck
+    - usetesting
     - unconvert
-    - paralleltest
+    - unused
+    - gocritic
+    - nakedret
+    - predeclared
+    - revive
+    - exhaustive
   disable:
     - errcheck
     - gosec
     - gosimple
-    - ineffassign
-    - noctx
-    - staticcheck
 
 linters-settings:
   errcheck:
-    exclude-functions: github.com/go-kit/kit/log:Log
+    exclude-functions: [github.com/go-kit/kit/log:Log]
   gofmt:
     simplify: false
+  gocritic:
+    disabled-checks:
+      - ifElseChain
+      - elseif
+  sloglint:
+    kv-only: true
+    context: "all"
+    key-naming-case: snake
+    static-msg: true
+  revive:
+    rules:
+      - name: superfluous-else
+        severity: warning
+        disabled: false
+        arguments:
+          - "preserveScope"
+      - name: package-comments
+        disabled: false
+      - name: context-as-argument
+        disabled: false
+      - name: context-keys-type
+        disabled: false
+      - name: error-return
+        disabled: false
+      - name: errorf
+        disabled: false
+      - name: unreachable-code
+        disabled: false
+      - name: early-return
+        disabled: false
+      - name: confusing-naming
+        disabled: false
+      - name: defer
+        disabled: false
+  staticcheck:
+    checks: ["all"]
 
 issues:
   exclude-rules:
     # False positive: https://github.com/kunwardeep/paralleltest/issues/8.
     - linters:
-      - paralleltest
+        - paralleltest
       text: "does not use range value in test Run"
+    # We prefer fmt.Sprintf over string concatenation for readability
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with string concatenation"
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with faster hex.EncodeToString"
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with faster strconv.FormatBool"
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with faster strconv.FormatInt"
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with faster strconv.FormatUint"
+    - linters: [perfsprint]
+      text: "fmt.Sprintf can be replaced with faster strconv.Itoa"
+    - linters: [perfsprint]
+      text: "fmt.Sprint can be replaced with faster strconv.Itoa"
   exclude-dirs:
     - test-cmds

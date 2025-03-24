@@ -1,7 +1,6 @@
 package env
 
 import (
-	"os"
 	"strings"
 	"testing"
 	"time"
@@ -19,9 +18,7 @@ func TestDuration(t *testing.T) { //nolint:paralleltest
 	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.value.String(), func(t *testing.T) {
 			key := strings.ToUpper(tt.value.String())
-			if err := os.Setenv(key, tt.value.String()); err != nil {
-				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
-			}
+			t.Setenv(key, tt.value.String())
 
 			def := 10 * time.Minute
 			if have, want := Duration(key, def), tt.value; have != want {
@@ -49,9 +46,7 @@ func TestString(t *testing.T) { //nolint:paralleltest
 	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.value, func(t *testing.T) {
 			key := strings.ToUpper(tt.value)
-			if err := os.Setenv(key, tt.value); err != nil {
-				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
-			}
+			t.Setenv(key, tt.value)
 
 			def := "default_value"
 			if have, want := String(key, def), tt.value; have != want {
@@ -84,9 +79,7 @@ func TestBool(t *testing.T) { //nolint:paralleltest
 	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.env, func(t *testing.T) {
 			key := "TEST_BOOL"
-			if err := os.Setenv(key, tt.env); err != nil {
-				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
-			}
+			t.Setenv(key, tt.env)
 
 			def := false
 			if have, want := Bool(key, def), tt.value; have != want {
@@ -120,9 +113,7 @@ func TestInt(t *testing.T) { //nolint:paralleltest
 	for _, tt := range tests { //nolint:paralleltest
 		t.Run(tt.env, func(t *testing.T) {
 			key := "TEST_INT"
-			if err := os.Setenv(key, tt.env); err != nil {
-				t.Fatalf("failed to set env var %s for test: %s\n", key, err)
-			}
+			t.Setenv(key, tt.env)
 
 			if have, want := Int(key, 10), tt.value; have != want {
 				t.Errorf("have %v, want %v", have, want)

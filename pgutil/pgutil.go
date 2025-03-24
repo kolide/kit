@@ -27,12 +27,12 @@ type sslMode string
 
 const (
 	SSLBlank      sslMode = ""
-	SSLDisable            = "disable"
-	SSLAllow              = "allow"
-	SSLPrefer             = "prefer"
-	SSLRequire            = "require"
-	SSLVerifyCa           = "verify-ca"
-	SSLVerifyFull         = "verify-full"
+	SSLDisable    sslMode = "disable"
+	SSLAllow      sslMode = "allow"
+	SSLPrefer     sslMode = "prefer"
+	SSLRequire    sslMode = "require"
+	SSLVerifyCa   sslMode = "verify-ca"
+	SSLVerifyFull sslMode = "verify-full"
 )
 
 // WithSSL sets the sslmode parameter for postgresql. See the

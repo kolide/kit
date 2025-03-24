@@ -161,7 +161,7 @@ func SemverFromVersionNum(versionNum int) string {
 	major := versionNum / majorVersionMultiplier
 	remaining := versionNum - (major * majorVersionMultiplier)
 	minor := remaining / minorVersionMultiplier
-	remaining = remaining - (minor * minorVersionMultiplier)
+	remaining -= (minor * minorVersionMultiplier)
 	// not strictly needed because patchVersionMultiplier is 1 but here because it feels correct
 	patch := remaining * patchVersionMultiplier
 

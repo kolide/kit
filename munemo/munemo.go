@@ -16,8 +16,6 @@ package munemo
 import (
 	"bytes"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 type munemoGenerator struct {
@@ -133,7 +131,7 @@ func (m *munemo) decode(s string) error {
 			s = s[3:]
 		} else {
 			m.number = 0
-			return errors.New(fmt.Sprintf("decode failed: unknown syllable %s", s))
+			return fmt.Errorf("decode failed: unknown syllable %s", s)
 		}
 	}
 	// No errors!
@@ -143,7 +141,7 @@ func (m *munemo) decode(s string) error {
 func (m *munemo) calculate(number int) {
 	if number < 0 {
 		m.buffer.Write([]byte(m.negativeSymbol))
-		number = number * -1
+		number = -number
 	}
 
 	modulo := number % len(m.symbols)
