@@ -3,12 +3,9 @@ package fsutil
 import (
 	"archive/tar"
 	"compress/gzip"
-	"fmt"
-	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -64,43 +61,7 @@ func createTar(t *testing.T, createLocation string, sourceDir string) {
 	tw := tar.NewWriter(gzw)
 	defer tw.Close()
 
-	require.NoError(t, filepath.Walk(sourceDir, func(path string, info fs.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		srcInfo, err := os.Lstat(path)
-		if os.IsNotExist(err) {
-			return fmt.Errorf("error adding %s to tarball: %w", path, err)
-		}
-
-		hdr, err := tar.FileInfoHeader(srcInfo, path)
-		if err != nil {
-			return fmt.Errorf("error creating tar header: %w", err)
-		}
-		hdr.Name = strings.TrimPrefix(path, sourceDir+string(os.PathSeparator))
-
-		if err := tw.WriteHeader(hdr); err != nil {
-			return fmt.Errorf("error writing tar header: %w", err)
-		}
-
-		if !srcInfo.Mode().IsRegular() {
-			// Don't open/copy over directories
-			return nil
-		}
-
-		srcFile, err := os.Open(path)
-		if err != nil {
-			return fmt.Errorf("error opening file to add to tarball: %w", err)
-		}
-		defer srcFile.Close()
-
-		if _, err := io.Copy(tw, srcFile); err != nil {
-			return fmt.Errorf("error copying file %s to tarball: %w", path, err)
-		}
-
-		return nil
-	}))
+	require.NoError(t, tw.AddFS(os.DirFS(sourceDir)))
 }
 
 func TestSanitizeExtractPath(t *testing.T) {
