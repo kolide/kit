@@ -58,7 +58,7 @@ jobs:
 
     - name: Go Test
       shell: bash
-      run: go test -cover -coverprofile=coverage.out ./...
+      run: go test -race -cover -coverprofile=coverage.out ./...
 
     - name: Upload coverage
       uses: actions/upload-artifact@v4

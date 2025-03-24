@@ -83,8 +83,7 @@ func Test_VersionNum(t *testing.T) {
 		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			version = tt.semver
-			require.Equal(t, tt.expectedVersionNum, VersionNum())
+			require.Equal(t, tt.expectedVersionNum, VersionNumFromSemver(tt.semver))
 		})
 	}
 }
@@ -152,10 +151,8 @@ func Test_VersionNumComparisons(t *testing.T) {
 		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			version = tt.lesserVersion
-			lesserParsed := VersionNum()
-			version = tt.greaterVersion
-			greaterParsed := VersionNum()
+			lesserParsed := VersionNumFromSemver(tt.lesserVersion)
+			greaterParsed := VersionNumFromSemver(tt.greaterVersion)
 			require.True(t, lesserParsed < greaterParsed,
 				fmt.Sprintf("expected %s to parse as lesser than %s. got lesser %d >= greater %d",
 					tt.lesserVersion,
@@ -195,8 +192,7 @@ func Test_VersionNumIsReversible(t *testing.T) {
 		tt := tt
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
-			version = tt.testedVersion
-			require.Equal(t, tt.testedVersion, SemverFromVersionNum(VersionNum()))
+			require.Equal(t, tt.testedVersion, SemverFromVersionNum(VersionNumFromSemver(tt.testedVersion)))
 		})
 	}
 }
