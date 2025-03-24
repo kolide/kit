@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -19,7 +20,7 @@ func TestCopyFSToDisk(t *testing.T) {
 	subdir, err := fs.Sub(embeddedSourceData, "test-data/fscopy")
 	require.NoError(t, err)
 
-	destDir := "/tmp/fstest" // t.TempDir()
+	destDir := t.TempDir()
 
 	require.NoError(t, CopyFSToDisk(subdir, destDir, CommonFileMode))
 
@@ -38,9 +39,14 @@ func TestCopyFSToDisk(t *testing.T) {
 		t.Run(tt.path, func(t *testing.T) {
 			t.Parallel()
 
+			expected := "hello\n"
+			if runtime.GOOS == "windows" {
+				expected = "hello\r\n"
+			}
+
 			contents, err := os.ReadFile(path.Join(destDir, tt.path))
 			require.NoError(t, err)
-			require.Equal(t, "hello\n", string(contents))
+			require.Equal(t, expected, string(contents))
 		})
 	}
 }
