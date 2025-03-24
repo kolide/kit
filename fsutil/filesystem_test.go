@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -41,12 +42,15 @@ func TestUntarBundle(t *testing.T) {
 	require.FileExists(t, newNestedFile)
 
 	// Confirm each file retained its original permissions
-	topLevelFileInfo, err := os.Stat(newTopLevelFile)
-	require.NoError(t, err)
-	require.Equal(t, topLevelFileMode.String(), topLevelFileInfo.Mode().String())
-	nestedFileInfo, err := os.Stat(newNestedFile)
-	require.NoError(t, err)
-	require.Equal(t, nestedFileMode.String(), nestedFileInfo.Mode().String())
+	// windows doesn't really support posix permissions, and golang doesn't fake much of it. So skip these on windows
+	if runtime.GOOS != "windows" {
+		topLevelFileInfo, err := os.Stat(newTopLevelFile)
+		require.NoError(t, err)
+		require.Equal(t, topLevelFileMode.String(), topLevelFileInfo.Mode().String())
+		nestedFileInfo, err := os.Stat(newNestedFile)
+		require.NoError(t, err)
+		require.Equal(t, nestedFileMode.String(), nestedFileInfo.Mode().String())
+	}
 }
 
 // createTar is a helper to create a test tar
