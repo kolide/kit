@@ -82,7 +82,7 @@ func StartServer(opts ...Option) (*Server, error) {
 }
 
 func (s *Server) Start() error {
-	l, err := net.Listen("tcp", s.addr)
+	l, err := net.Listen("tcp", s.addr) //nolint:noctx
 	if err != nil {
 		return errors.Wrap(err, "opening socket")
 	}

@@ -88,7 +88,7 @@ func OpenDB(driver, dsn string, opts ...Option) (*sql.DB, error) {
 
 	var dbError error
 	for attempt := 0; attempt < config.maxAttempts; attempt++ {
-		dbError = db.Ping()
+		dbError = db.Ping() //nolint:noctx
 		if dbError == nil {
 			// we're connected!
 			break
