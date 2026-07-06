@@ -62,7 +62,7 @@ func TestHealthzHandler(t *testing.T) {
 			t.Parallel()
 
 			rr := httptest.NewRecorder()
-			req := httptest.NewRequest("GET", "/healthz", nil)
+			req := httptest.NewRequestWithContext(t.Context(), "GET", "/healthz", nil)
 			tt.handler.ServeHTTP(rr, req)
 			assert.Equal(t, rr.Code, tt.wantHeader)
 		})

@@ -116,11 +116,7 @@ func (m *munemo) decode(s string) error {
 
 	// As long as there are characters, parse them
 	// Read the first syllable, interpret, remove.
-	for {
-		if s == "" {
-			break
-		}
-
+	for s != "" {
 		// Syllables are 2 or 3 letters. Check to see if the first 2 or 3
 		// characters are in our array of syllables.
 		if val, ok := m.symbolValues[s[0:2]]; ok {
