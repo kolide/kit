@@ -65,7 +65,7 @@ jobs:
       run: go test -race -cover -coverprofile=coverage.out ./...
 
     - name: Upload coverage
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ runner.os }}-coverage.out
         path: ./coverage.out
