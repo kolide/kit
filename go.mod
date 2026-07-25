@@ -12,7 +12,7 @@ require (
 	github.com/pkg/errors v0.8.0
 	github.com/stretchr/testify v1.2.1
 	go.opencensus.io v0.22.1
-	google.golang.org/grpc v1.79.3
+	google.golang.org/grpc v1.82.1
 )
 
 require (
@@ -29,5 +29,5 @@ require (
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
-	google.golang.org/protobuf v1.36.10 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )
