@@ -1,6 +1,6 @@
 module github.com/kolide/kit
 
-go 1.26.5
+go 1.26.6
 
 require (
 	github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc
