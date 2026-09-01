@@ -65,7 +65,7 @@ func WithCertificates(certs []tls.Certificate) Option {
 //
 // Use one of the available Options to modify the default config.
 func NewConfig(opts ...Option) *tls.Config {
-	cfg := tls.Config{PreferServerCipherSuites: true}
+	cfg := tls.Config{}
 
 	for _, opt := range opts {
 		opt(&cfg)
