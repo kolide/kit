@@ -12,7 +12,7 @@ require (
 	github.com/pkg/errors v0.8.0
 	github.com/stretchr/testify v1.2.1
 	go.opencensus.io v0.22.1
-	google.golang.org/grpc v1.82.1
+	google.golang.org/grpc v1.83.1
 )
 
 require (
